@@ -1,3 +1,5 @@
+from sqlalchemy.exc import IntegrityError
+from app.domain.exceptions import CustomerAlreadyExistsError
 from sqlalchemy.orm import Session
 from app.domain.enums import CustomerStatus, PipefyOperation
 from app.integrations import PipefyClient
@@ -14,6 +16,10 @@ class CustomerService:
 
     def create_customer(self, data: CustomerCreateRequest) -> Customer:
         normalized_email = str(data.email).lower()
+        existing_customer = self.customer_repository.find_by_email(normalized_email)
+
+        if existing_customer is not None:
+            raise CustomerAlreadyExistsError(normalized_email)
 
         try:
             customer = self.customer_repository.create(
@@ -40,6 +46,10 @@ class CustomerService:
             self.db.refresh(customer)
 
             return customer
+        
+        except IntegrityError as error:
+            self.db.rollback()
+            raise CustomerAlreadyExistsError(normalized_email) from error
 
         except Exception:
             self.db.rollback()
