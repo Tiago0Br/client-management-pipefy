@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Any
 from app.core.settings import Settings, settings
-from app.domain.enums import CustomerStatus
+from app.domain.enums import CustomerPriority, CustomerStatus
 from app.integrations.pipefy_mutations import (
     CREATE_CARD_MUTATION,
     UPDATE_CARD_FIELD_MUTATION,
@@ -87,13 +87,31 @@ class PipefyClient:
         self,
         *,
         card_id: str,
-        priority: str,
+        priority: CustomerPriority,
     ) -> dict[str, Any]:
         return self.build_update_card_field_payload(
             card_id=card_id,
             field_id=self.settings.pipefy_field_priority,
-            new_value=priority,
+            new_value=priority.value,
         )
+
+    def build_update_status_and_priority_payloads(
+        self,
+        *,
+        card_id: str,
+        status: CustomerStatus,
+        priority: CustomerPriority,
+    ) -> list[dict[str, Any]]:
+        return [
+            self.build_update_status_payload(
+                card_id=card_id,
+                status=status,
+            ),
+            self.build_update_priority_payload(
+                card_id=card_id,
+                priority=priority,
+            ),
+        ]
 
     @staticmethod
     def _build_field_attribute(
