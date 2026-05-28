@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -14,6 +16,8 @@ router = APIRouter(
     tags=["Webhooks"],
 )
 
+DatabaseSession = Annotated[Session, Depends(get_db)]
+
 @router.post(
     "/pipefy/card-updated",
     response_model=PipefyCardUpdatedWebhookResponse,
@@ -21,7 +25,7 @@ router = APIRouter(
 )
 def process_pipefy_card_updated_webhook(
     payload: PipefyCardUpdatedWebhookRequest,
-    db: Session = Depends(get_db),
+    db: DatabaseSession,
 ) -> PipefyCardUpdatedWebhookResponse:
     webhook_service = WebhookService(db)
 

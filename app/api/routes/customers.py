@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -11,6 +13,8 @@ router = APIRouter(
     tags=["Customers"],
 )
 
+DatabaseSession = Annotated[Session, Depends(get_db)]
+
 @router.post(
     path="",
     response_model=CustomerCreateResponse,
@@ -18,7 +22,7 @@ router = APIRouter(
 )
 def create_customer(
     payload: CustomerCreateRequest,
-    db: Session = Depends(get_db),
+    db: DatabaseSession,
 ) -> CustomerCreateResponse:
     customer_service = CustomerService(db)
 
