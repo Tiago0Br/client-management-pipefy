@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.routes import customers_router, health_router
+from app.api.routes import customers_router, health_router, webhooks_router
 
 app = FastAPI(title="Client Management Pipefy")
 
@@ -13,3 +13,4 @@ def read_root() -> dict[str, str]:
 
 app.include_router(health_router)
 app.include_router(customers_router)
+app.include_router(webhooks_router)
