@@ -1,3 +1,4 @@
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -41,3 +42,61 @@ def test_create_customer_with_valid_payload(
 
     assert payload_input["title"] == "João Silva"
     assert payload_input["submitterEmail"] == "joao.silva@example.com"
+
+@pytest.mark.parametrize(
+    "invalid_payload",
+    [
+        pytest.param(
+            {
+                "cliente_email": "joao.silva@example.com",
+                "tipo_solicitacao": "Atualização cadastral",
+                "valor_patrimonio": 250000,
+            },
+            id="missing-customer-name",
+        ),
+        pytest.param(
+            {
+                "cliente_nome": "João Silva",
+                "cliente_email": "email-invalido",
+                "tipo_solicitacao": "Atualização cadastral",
+                "valor_patrimonio": 250000,
+            },
+            id="invalid-email",
+        ),
+        pytest.param(
+            {
+                "cliente_nome": "João Silva",
+                "cliente_email": "joao.silva@example.com",
+                "tipo_solicitacao": "Atualização cadastral",
+                "valor_patrimonio": -100,
+            },
+            id="negative-patrimony-value",
+        ),
+    ],
+)
+def test_create_customer_with_invalid_payload_returns_422(
+    client: TestClient,
+    invalid_payload: dict[str, object],
+) -> None:
+    response = client.post("/clientes", json=invalid_payload)
+
+    assert response.status_code == 422
+
+def test_create_customer_with_duplicated_email_returns_409(
+    client: TestClient,
+    db_session: Session,
+    valid_customer_payload: dict[str, object],
+) -> None:
+    first_response = client.post("/clientes", json=valid_customer_payload)
+    second_response = client.post("/clientes", json=valid_customer_payload)
+
+    assert first_response.status_code == 201
+    assert second_response.status_code == 409
+
+    customers_count = db_session.scalar(select(func.count()).select_from(Customer))
+    pipefy_requests_count = db_session.scalar(
+        select(func.count()).select_from(PipefyRequest)
+    )
+
+    assert customers_count == 1
+    assert pipefy_requests_count == 1
