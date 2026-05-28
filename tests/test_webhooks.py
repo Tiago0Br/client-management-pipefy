@@ -1,9 +1,11 @@
-from app.core.settings import settings
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
+
+from app.core.settings import settings
 from app.domain.enums import CustomerPriority, CustomerStatus, PipefyOperation
 from app.models import Customer, PipefyRequest, WebhookEvent
+
 
 def test_webhook_processes_high_priority_customer(
     client: TestClient,

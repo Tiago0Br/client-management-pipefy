@@ -1,5 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+
 from app.domain.enums import CustomerStatus, PipefyOperation
 from app.domain.exceptions import CustomerNotFoundError
 from app.domain.rules import calculate_customer_priority
@@ -13,6 +14,7 @@ from app.schemas import (
     PipefyCardUpdatedWebhookRequest,
     PipefyCardUpdatedWebhookResponse,
 )
+
 
 class WebhookService:
     def __init__(self, db: Session):
@@ -47,13 +49,13 @@ class WebhookService:
         priority = calculate_customer_priority(customer.patrimony_value)
 
         try:
-            pipefy_payloads = self.pipefy_client.build_update_status_and_priority_payloads(
+            payloads = self.pipefy_client.build_update_status_and_priority_payloads(
                 card_id=data.card_id,
                 status=CustomerStatus.PROCESSED,
                 priority=priority,
             )
 
-            for payload in pipefy_payloads:
+            for payload in payloads:
                 self.pipefy_request_repository.create(
                     operation=PipefyOperation.UPDATE_CARD_FIELD.value,
                     payload_json=payload,

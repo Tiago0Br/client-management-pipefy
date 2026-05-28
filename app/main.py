@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+
 from app.api.routes import customers_router, health_router, webhooks_router
 
 app = FastAPI(title="Client Management Pipefy")

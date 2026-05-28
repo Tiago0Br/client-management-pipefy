@@ -1,7 +1,10 @@
 from datetime import datetime
 from decimal import Decimal
+
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
+
 from app.domain.enums import CustomerPriority, CustomerStatus
+
 
 class CustomerCreateRequest(BaseModel):
     name: str = Field(

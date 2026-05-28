@@ -1,11 +1,13 @@
 from sqlalchemy.exc import IntegrityError
-from app.domain.exceptions import CustomerAlreadyExistsError
 from sqlalchemy.orm import Session
+
 from app.domain.enums import CustomerStatus, PipefyOperation
+from app.domain.exceptions import CustomerAlreadyExistsError
 from app.integrations import PipefyClient
 from app.models import Customer
 from app.repositories import CustomerRepository, PipefyRequestRepository
 from app.schemas import CustomerCreateRequest
+
 
 class CustomerService:
     def __init__(self, db: Session):

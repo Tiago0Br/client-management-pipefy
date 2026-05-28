@@ -2,8 +2,10 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
+
 from app.domain.enums import CustomerStatus, PipefyOperation
 from app.models import Customer, PipefyRequest
+
 
 def test_create_customer_with_valid_payload(
     client: TestClient,

@@ -1,10 +1,12 @@
-import pytest
 from collections.abc import Generator
 from decimal import Decimal
+
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
+
 from app.core.database import Base, get_db
 from app.domain.enums import CustomerStatus
 from app.main import app

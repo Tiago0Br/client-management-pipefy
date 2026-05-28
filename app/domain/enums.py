@@ -1,5 +1,6 @@
 from enum import StrEnum
 
+
 class CustomerStatus(StrEnum):
     WAITING_ANALYSIS = "Aguardando Análise"
     PROCESSED = "Processado"

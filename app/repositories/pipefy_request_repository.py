@@ -1,6 +1,9 @@
 from typing import Any
+
 from sqlalchemy.orm import Session
+
 from app.models import PipefyRequest
+
 
 class PipefyRequestRepository:
     def __init__(self, db: Session) -> None:

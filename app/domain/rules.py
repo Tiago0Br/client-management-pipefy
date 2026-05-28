@@ -1,4 +1,5 @@
 from decimal import Decimal
+
 from app.domain.enums import CustomerPriority
 
 HIGH_PRIORITY_MINIMUM_PATRIMONY = Decimal("200000")

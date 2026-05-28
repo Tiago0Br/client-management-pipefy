@@ -1,11 +1,13 @@
 from decimal import Decimal
 from typing import Any
+
 from app.core.settings import Settings, settings
 from app.domain.enums import CustomerPriority, CustomerStatus
 from app.integrations.pipefy_mutations import (
     CREATE_CARD_MUTATION,
     UPDATE_CARD_FIELD_MUTATION,
 )
+
 
 class PipefyClient:
     def __init__(self, app_settings: Settings = settings):
